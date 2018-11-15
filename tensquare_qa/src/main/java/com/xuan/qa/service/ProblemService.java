@@ -51,7 +51,7 @@ public class ProblemService {
      * @return
      */
     public Page<Problem> newlist(String labelId, int page, int size) {
-        return problemDao.newlist(labelId, getpaPageRequest(page, size));
+        return problemDao.newlist(labelId, getPageRequest(page, size));
     }
 
     /**
@@ -63,7 +63,7 @@ public class ProblemService {
      * @return
      */
     public Page<Problem> hotlist(String labelId, int page, int size) {
-        return problemDao.hotlist(labelId, getpaPageRequest(page, size));
+        return problemDao.hotlist(labelId, getPageRequest(page, size));
     }
 
     /**
@@ -75,7 +75,7 @@ public class ProblemService {
      * @return
      */
     public Page<Problem> waitlist(String labelId, int page, int size) {
-        return problemDao.waitlist(labelId, getpaPageRequest(page, size));
+        return problemDao.waitlist(labelId, getPageRequest(page, size));
     }
 
     /**
@@ -99,7 +99,7 @@ public class ProblemService {
     public Page<Problem> findSearch(Map whereMap, int page, int size) {
         Specification<Problem> specification = createSpecification(whereMap);
 
-        return problemDao.findAll(specification, getpaPageRequest(page, size));
+        return problemDao.findAll(specification, getPageRequest(page, size));
     }
 
 
@@ -208,7 +208,7 @@ public class ProblemService {
      * @param size
      * @return
      */
-    private PageRequest getpaPageRequest(int page, int size) {
+    private PageRequest getPageRequest(int page, int size) {
         PageUtil pageUtil = new PageUtil();
         pageUtil.setCurrNo(page);
         pageUtil.setSize(size);

@@ -29,6 +29,14 @@ public class PageUtil {
      */
     private int totalSize;
 
+    public PageUtil() {
+    }
+
+    public PageUtil(int currNo, int size) {
+        this.currNo = currNo == 0 ? 1 : currNo > this.totalCurrNo ? this.totalCurrNo : currNo;
+        this.size = size == 0 ? 15 : size;
+    }
+
     public int getCurrNo() {
         return currNo;
     }
