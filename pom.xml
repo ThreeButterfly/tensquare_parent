@@ -16,6 +16,7 @@
         <module>tensquare_gathering</module>
         <module>tensquare_spit</module>
         <module>tensquare_search</module>
+        <module>rabbitmq_demo</module>
     </modules>
 
     <packaging>pom</packaging>
