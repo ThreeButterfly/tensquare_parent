@@ -5,6 +5,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import util.IdWorker;
 
+/**
+ * <p>Description: 用户注册 </p>
+ * @author Yat-Xuan
+ * @params
+ * @return
+ * @Date: 2018/11/20 0020 10:34
+ * @Modified By:
+*/
 @SpringBootApplication
 public class UserApplication {
 

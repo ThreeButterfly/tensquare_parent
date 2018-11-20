@@ -201,12 +201,17 @@ public class UserService {
 
     }
 
+    /**
+     * 手机号
+     *
+     * @param mobile
+     */
     public void sendSms(String mobile) {
         //生成六位随机数
         String checkCode = RandomStringUtils.randomNumeric(6);
 
         //控制台输出【用于测试】
-        System.out.println("验证码为："+checkCode);
+        System.out.println("验证码为：" + checkCode);
 
         //把验证码存入redis中，并设置有效时间为两个小时
         redisTemplate.opsForValue().set("checkCode_" + mobile, checkCode, 2, TimeUnit.HOURS);
