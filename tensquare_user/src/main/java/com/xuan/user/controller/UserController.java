@@ -3,8 +3,10 @@ package com.xuan.user.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.xuan.user.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import com.xuan.user.pojo.User;
@@ -13,6 +15,8 @@ import com.xuan.user.service.UserService;
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+
+import javax.annotation.Resource;
 
 /**
  * 控制器层
@@ -27,6 +31,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Resource
+    private RedisTemplate redisTemplate;
 
     /**
      * 发送手机短信
@@ -34,7 +40,31 @@ public class UserController {
     @PostMapping("/sendsms/{mobile}")
     public Result sendSms(@PathVariable String mobile) {
         userService.sendSms(mobile);
-        return new Result(true,StatusCode.OK,"发送成功");
+        return new Result(true, StatusCode.OK, "发送成功");
+    }
+
+    /**
+     * 用户注册
+     *
+     * @param code 手机验证码
+     * @param user 用户数据
+     * @return
+     */
+    @PostMapping("/register/{code}")
+    public Result regist(@PathVariable String code, @RequestBody User user) {
+        //获取redis缓存中的手机验证码
+        String checkCodeRedis = (String) redisTemplate.opsForValue().get("checkCode_" + user.getMobile());
+
+        if (checkCodeRedis.isEmpty()) {
+            return new Result(false, StatusCode.VERIFICATION, "验证码已过期");
+        }
+
+        if (!checkCodeRedis.equals(code)) {
+            return new Result(false, StatusCode.VERIFICATION, "验证码错误");
+        }
+
+        userService.add(user);
+        return new Result(true, StatusCode.OK, "注册成功");
     }
 
     /**

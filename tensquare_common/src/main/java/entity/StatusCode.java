@@ -33,4 +33,8 @@ public class StatusCode {
      * 重复操作
      */
     public static final int REPERROR =20005;
+    /**
+     * 验证码过期
+     */
+    public static final int VERIFICATION =20006;
 }

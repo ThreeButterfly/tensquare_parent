@@ -99,6 +99,30 @@ public class UserService {
      */
     public void add(User user) {
         user.setId(idWorker.nextId() + "");
+        /**
+         * 关注数
+         */
+        user.setFollowcount(0);
+        /**
+         * 粉丝数
+         */
+        user.setFanscount(0);
+        /**
+         * 在线时长
+         */
+        user.setOnline(0L);
+        /**
+         * 注册日期
+         */
+        user.setRegdate(new Date());
+        /**
+         * 更新日期
+         */
+        user.setUpdatedate(new Date());
+        /**
+         * 最后登陆日期
+         */
+        user.setLastdate(new Date());
         userDao.save(user);
     }
 
