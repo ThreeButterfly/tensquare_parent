@@ -1,9 +1,7 @@
 package com.xuan.user.controller;
 
-import java.util.List;
 import java.util.Map;
 
-import com.xuan.user.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -34,6 +32,20 @@ public class UserController {
     @Resource
     private RedisTemplate redisTemplate;
 
+
+    /**
+     *  用户登录
+     * @param user
+     * @return
+     */
+    @PostMapping("/login")
+    public Result login(@RequestBody User user){
+        user = userService.login(user);
+        if (user == null) {
+            return new Result(false, StatusCode.LOGINERROR, "登录失败");
+        }
+        return new Result(true, StatusCode.OK, "登录成功");
+    }
     /**
      * 发送手机短信
      */

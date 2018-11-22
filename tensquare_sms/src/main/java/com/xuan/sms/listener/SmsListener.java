@@ -1,6 +1,5 @@
 package com.xuan.sms.listener;
 
-import com.aliyuncs.exceptions.ClientException;
 import com.xuan.sms.utils.SmsUtil;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -25,12 +24,6 @@ public class SmsListener {
     @Resource
     private SmsUtil smsUtil;
 
-    @Value("${aliyun.sms.template_code}")
-    private String template_code;
-
-    @Value("${aliyun.sms.sign_name}")
-    private String sign_name;
-
     @RabbitHandler
     public void executeSms(Map<String, String> map) {
         String mobile = map.get("mobile");
@@ -38,11 +31,12 @@ public class SmsListener {
         System.out.println("手机号：" + mobile);
         System.out.println("验证码：" + checkCode);
 
-        // try {
-        //     smsUtil.sendSms(mobile, template_code, sign_name, "{\"checkCode\":\"" + checkCode + "\"}");
-        // } catch (ClientException e) {
-        //     e.printStackTrace();
-        // }
+        try {
+            smsUtil.sendSms(mobile, checkCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
 
     }
 }

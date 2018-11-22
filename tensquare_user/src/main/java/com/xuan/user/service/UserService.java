@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import util.IdWorker;
@@ -42,6 +43,19 @@ public class UserService {
 
     @Resource
     private RabbitTemplate rabbitTemplate;
+
+    @Resource
+    private BCryptPasswordEncoder encoder;
+
+
+    public User login(User user) {
+        User userLogin = userDao.findByMobile(user.getMobile());
+
+        if (userLogin != null && encoder.matches(user.getPassword(), userLogin.getPassword())) {
+            return userLogin;
+        }
+        return null;
+    }
 
     /**
      * 查询全部列表
@@ -96,29 +110,19 @@ public class UserService {
      */
     public void add(User user) {
         user.setId(idWorker.nextId() + "");
-        /**
-         * 关注数
-         */
+        //密码加密
+        user.setPassword(encoder.encode(user.getPassword()));
+        // 关注数
         user.setFollowcount(0);
-        /**
-         * 粉丝数
-         */
+        //粉丝数
         user.setFanscount(0);
-        /**
-         * 在线时长
-         */
+        //在线时长
         user.setOnline(0L);
-        /**
-         * 注册日期
-         */
+        //注册日期
         user.setRegdate(new Date());
-        /**
-         * 更新日期
-         */
+        //更新日期
         user.setUpdatedate(new Date());
-        /**
-         * 最后登陆日期
-         */
+        //最后登陆日期
         user.setLastdate(new Date());
         userDao.save(user);
     }
@@ -221,4 +225,6 @@ public class UserService {
         rabbitTemplate.convertAndSend("sms", map);
 
     }
+
+
 }

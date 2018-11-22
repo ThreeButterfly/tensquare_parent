@@ -45,9 +45,12 @@ public class AdminService {
 
     public Admin login(Admin admin) {
 
+        //先根据用户名查询对象
         Admin adminLogin = adminDao.findByLoginname(admin.getLoginname());
 
+        //然后拿数据库中的密码和用户输入的密码进去匹配是否相同
         if (adminLogin != null && encoder.matches(admin.getPassword(), adminLogin.getPassword())) {
+            //登录成功，返回对象
             return adminLogin;
         }
         return null;
