@@ -44,16 +44,20 @@ public class JwtUtil {
      *
      * @param id      用户id
      * @param subject 用户名
-     * @param roles 用户角色
+     * @param roles   用户角色
      * @return token编码
      */
     public String createJWT(String id, String subject, String roles) {
+
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
+
         JwtBuilder builder = Jwts.builder().setId(id)
                 .setSubject(subject)
                 .setIssuedAt(now)
-                .signWith(SignatureAlgorithm.HS256, key).claim("roles", roles);
+                .claim("roles", roles)
+                .signWith(SignatureAlgorithm.HS256, key);
+
         if (ttl > 0) {
             builder.setExpiration(new Date(nowMillis + ttl));
         }
