@@ -1,18 +1,17 @@
 package com.xuan.qa.controller;
 
-import java.util.List;
-import java.util.Map;
-
+import com.xuan.qa.pojo.Problem;
+import com.xuan.qa.service.ProblemService;
+import entity.PageResult;
+import entity.Result;
+import entity.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import com.xuan.qa.pojo.Problem;
-import com.xuan.qa.service.ProblemService;
-
-import entity.PageResult;
-import entity.Result;
-import entity.StatusCode;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * 控制器层
@@ -27,12 +26,15 @@ public class ProblemController {
     @Autowired
     private ProblemService problemService;
 
+    @Resource
+    private HttpServletRequest request;
+
     /**
      * 最新回复
      *
      * @param labelId 标签id
-     * @param page  当前页面
-     * @param size  当前页数量
+     * @param page    当前页面
+     * @param size    当前页数量
      * @return
      */
     @GetMapping("/newlist/{labelId}/{page}/{size}")
@@ -40,7 +42,7 @@ public class ProblemController {
         Page<Problem> pageData = problemService.newlist(labelId, page, size);
 
         return new Result(true, StatusCode.OK, "查询成功",
-                new PageResult<Problem>(pageData.getTotalElements(),pageData.getContent()));
+                new PageResult<Problem>(pageData.getTotalElements(), pageData.getContent()));
     }
 
     /**
@@ -56,7 +58,7 @@ public class ProblemController {
         Page<Problem> pageData = problemService.hotlist(labelId, page, size);
 
         return new Result(true, StatusCode.OK, "查询成功",
-                new PageResult<Problem>(pageData.getTotalElements(),pageData.getContent()));
+                new PageResult<Problem>(pageData.getTotalElements(), pageData.getContent()));
     }
 
     /**
@@ -72,7 +74,7 @@ public class ProblemController {
         Page<Problem> pageData = problemService.waitlist(labelId, page, size);
 
         return new Result(true, StatusCode.OK, "查询成功",
-                new PageResult<Problem>(pageData.getTotalElements(),pageData.getContent()));
+                new PageResult<Problem>(pageData.getTotalElements(), pageData.getContent()));
     }
 
 
@@ -130,6 +132,12 @@ public class ProblemController {
      */
     @RequestMapping(method = RequestMethod.POST)
     public Result add(@RequestBody Problem problem) {
+
+        String token = (String) request.getAttribute("claims_user");
+        if (token == null || "".equals(token)) {
+            return new Result(false, StatusCode.ACCESSERROR, "权限不足");
+        }
+
         problemService.add(problem);
         return new Result(true, StatusCode.OK, "增加成功");
     }

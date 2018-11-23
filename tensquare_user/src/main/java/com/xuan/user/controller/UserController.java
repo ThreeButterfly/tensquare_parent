@@ -1,20 +1,19 @@
 package com.xuan.user.controller;
 
-import java.util.Map;
-
+import com.xuan.user.pojo.User;
+import com.xuan.user.service.UserService;
+import entity.PageResult;
+import entity.Result;
+import entity.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
-
-import com.xuan.user.pojo.User;
-import com.xuan.user.service.UserService;
-
-import entity.PageResult;
-import entity.Result;
-import entity.StatusCode;
+import util.JwtUtil;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 控制器层
@@ -32,20 +31,32 @@ public class UserController {
     @Resource
     private RedisTemplate redisTemplate;
 
+    @Resource
+    private JwtUtil jwtUtil;
+
 
     /**
-     *  用户登录
+     * 用户登录
+     *
      * @param user
      * @return
      */
     @PostMapping("/login")
-    public Result login(@RequestBody User user){
+    public Result login(@RequestBody User user) {
         user = userService.login(user);
         if (user == null) {
             return new Result(false, StatusCode.LOGINERROR, "登录失败");
         }
-        return new Result(true, StatusCode.OK, "登录成功");
+
+        String token = jwtUtil.createJWT(user.getId(), user.getNickname(), "user");
+
+        Map<String, Object> map = new HashMap<>(16);
+        map.put("token", token);
+        map.put("roles", "user");
+
+        return new Result(true, StatusCode.OK, "登录成功", map);
     }
+
     /**
      * 发送手机短信
      */
