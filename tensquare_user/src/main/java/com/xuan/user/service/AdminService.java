@@ -1,30 +1,23 @@
 package com.xuan.user.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import com.xuan.user.dao.AdminDao;
+import com.xuan.user.pojo.Admin;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import util.IdWorker;
 
 import javax.annotation.Resource;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Selection;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import util.IdWorker;
-
-import com.xuan.user.dao.AdminDao;
-import com.xuan.user.pojo.Admin;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 服务层
@@ -37,7 +30,7 @@ public class AdminService {
     @Autowired
     private AdminDao adminDao;
 
-    @Autowired
+    @Resource
     private IdWorker idWorker;
 
     @Resource
@@ -117,7 +110,7 @@ public class AdminService {
     /**
      * 修改
      *
-     * @param admin
+     * @param admin 管理者用户
      */
     public void update(Admin admin) {
         adminDao.save(admin);
@@ -126,7 +119,7 @@ public class AdminService {
     /**
      * 删除
      *
-     * @param id
+     * @param id 管理者id
      */
     public void deleteById(String id) {
         adminDao.deleteById(id);

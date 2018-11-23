@@ -1,14 +1,8 @@
 package com.xuan.user.service;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Resource;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import com.xuan.user.dao.UserDao;
+import com.xuan.user.pojo.User;
+import io.jsonwebtoken.Claims;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +12,17 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import util.IdWorker;
+import util.JwtUtil;
 
-import com.xuan.user.dao.UserDao;
-import com.xuan.user.pojo.User;
+import javax.annotation.Resource;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 服务层
@@ -46,6 +46,12 @@ public class UserService {
 
     @Resource
     private BCryptPasswordEncoder encoder;
+
+    @Resource
+    private HttpServletRequest request;
+
+    @Resource
+    private JwtUtil jwtUtil;
 
 
     public User login(User user) {
@@ -142,6 +148,39 @@ public class UserService {
      * @param id
      */
     public void deleteById(String id) {
+
+        //获取请求头中的信息
+        String header = request.getHeader("Authorization");
+
+        if (header == null || "".equals(header)) {
+            throw new RuntimeException("请先登录");
+        }
+
+        if (!header.startsWith("Bearer ")) {
+            throw new RuntimeException("权限不足");
+        }
+
+        //提取token
+        String token = header.substring(7);
+        //解析token
+        Claims claims = null;
+
+        try {
+            claims = jwtUtil.parseJWT(token);
+
+            //获取角色
+            String role = (String) claims.get("roles");
+
+            //有删除操作的角色身份，这里先暂时设置为默认
+            String deleteRole = "admin";
+
+            if (role == null || !deleteRole.equals(role)) {
+                throw new RuntimeException("权限不足");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("权限不足");
+        }
+
         userDao.deleteById(id);
     }
 
@@ -223,8 +262,5 @@ public class UserService {
         map.put("checkCode", checkCode);
 
         rabbitTemplate.convertAndSend("sms", map);
-
     }
-
-
 }

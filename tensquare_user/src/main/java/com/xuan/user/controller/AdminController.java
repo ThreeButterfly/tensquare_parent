@@ -1,17 +1,18 @@
 package com.xuan.user.controller;
 
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
-
 import com.xuan.user.pojo.Admin;
 import com.xuan.user.service.AdminService;
-
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+import util.JwtUtil;
+
+import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 控制器层
@@ -26,13 +27,24 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
+    @Resource
+    private JwtUtil jwtUtil;
+
     @PostMapping("/login")
     public Result login(@RequestBody Admin admin) {
         admin = adminService.login(admin);
+
         if (admin == null) {
             return new Result(false, StatusCode.LOGINERROR, "登录失败");
         }
-        return new Result(true, StatusCode.OK, "登录成功");
+
+        String token = jwtUtil.createJWT(admin.getId(), admin.getLoginname(), "admin");
+
+        Map<String, Object> map = new HashMap<>(16);
+        map.put("token", token);
+        map.put("roles", "admin");
+
+        return new Result(true, StatusCode.OK, "登录成功", map);
     }
 
     /**
