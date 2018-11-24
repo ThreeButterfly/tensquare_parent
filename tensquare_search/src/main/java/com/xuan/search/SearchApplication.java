@@ -2,6 +2,7 @@ package com.xuan.search;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import util.IdWorker;
 
@@ -14,6 +15,7 @@ import util.IdWorker;
  * @Time: 14:00
  */
 @SpringBootApplication
+@EnableEurekaClient
 public class SearchApplication {
 
     public static void main(String[] args) {

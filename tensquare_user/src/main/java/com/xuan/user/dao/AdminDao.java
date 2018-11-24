@@ -13,4 +13,5 @@ import com.xuan.user.pojo.Admin;
 public interface AdminDao extends JpaRepository<Admin, String>, JpaSpecificationExecutor<Admin> {
 
     Admin findByLoginname(String loginname);
+
 }

@@ -1,5 +1,6 @@
 package com.xuan.qa.controller;
 
+import com.xuan.qa.client.BaseClient;
 import com.xuan.qa.pojo.Problem;
 import com.xuan.qa.service.ProblemService;
 import entity.PageResult;
@@ -28,6 +29,16 @@ public class ProblemController {
 
     @Resource
     private HttpServletRequest request;
+
+    @Resource
+    private BaseClient baseClient;
+
+    @GetMapping("/label/{labelId}")
+    public Result findByLabelId(@PathVariable("labelId") String labelId) {
+        Result result = baseClient.findById(labelId);
+        return result;
+    }
+
 
     /**
      * 最新回复

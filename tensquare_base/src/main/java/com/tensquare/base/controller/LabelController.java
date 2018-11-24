@@ -33,7 +33,7 @@ public class LabelController {
     }
 
     @GetMapping("/{labelId}")
-    public Result findById(@PathVariable String labelId) {
+    public Result findById(@PathVariable("labelId") String labelId) {
         return new Result(true, StatusCode.OK, "查询成功", labelService.findById(labelId));
     }
 
