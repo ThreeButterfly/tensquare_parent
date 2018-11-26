@@ -34,6 +34,18 @@ public class UserController {
     @Resource
     private JwtUtil jwtUtil;
 
+    /**
+     * 更新好友的粉丝数和用户关注数
+     * @param userId 用户id
+     * @param friendId 好友id
+     * @param x 粉丝数和关注数的增加量
+     */
+    @PutMapping(value = "/{userId}/{friendId}/{x}")
+    public void updateFanscountAndFollowcount(@PathVariable("userId") String userId,
+                                              @PathVariable("friendId") String friendId,
+                                              @PathVariable("x") int x) {
+        userService.updateFanscountAndFollowcount(userId,friendId,x);
+    }
 
     /**
      * 用户登录

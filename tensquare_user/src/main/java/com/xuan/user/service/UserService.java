@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import util.IdWorker;
 import util.JwtUtil;
 
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
  * @author Administrator
  */
 @Service
+@Transactional
 public class UserService {
 
     @Autowired
@@ -165,9 +167,7 @@ public class UserService {
      * @return
      */
     private Specification<User> createSpecification(Map searchMap) {
-
         return new Specification<User>() {
-
             @Override
             public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicateList = new ArrayList<Predicate>();
@@ -207,12 +207,9 @@ public class UserService {
                 if (searchMap.get("personality") != null && !"".equals(searchMap.get("personality"))) {
                     predicateList.add(cb.like(root.get("personality").as(String.class), "%" + (String) searchMap.get("personality") + "%"));
                 }
-
                 return cb.and(predicateList.toArray(new Predicate[predicateList.size()]));
-
             }
         };
-
     }
 
     /**
@@ -236,5 +233,12 @@ public class UserService {
         map.put("checkCode", checkCode);
 
         rabbitTemplate.convertAndSend("sms", map);
+    }
+
+    public void updateFanscountAndFollowcount(String userId, String friendId, int x) {
+        //更新好友粉丝数
+        userDao.updateFanscount(x,friendId);
+        //更新用户关注数
+        userDao.updateFollowcount(x,userId);
     }
 }

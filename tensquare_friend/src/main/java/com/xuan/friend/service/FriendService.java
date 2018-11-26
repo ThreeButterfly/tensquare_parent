@@ -1,5 +1,6 @@
 package com.xuan.friend.service;
 
+import com.xuan.friend.client.UserClient;
 import com.xuan.friend.dao.FriendDao;
 import com.xuan.friend.dao.NoFriendDao;
 import com.xuan.friend.pojo.Friend;
@@ -26,6 +27,9 @@ public class FriendService {
 
     @Resource
     private NoFriendDao noFriendDao;
+
+    @Resource
+    private UserClient userClient;
 
     /**
      * 添加好友
@@ -55,6 +59,14 @@ public class FriendService {
             friendDao.updateIsLike("1", friendId, userId);
         }
 
+        //判断该用户以前是否不喜欢过该好友，若有则删除这条记录
+        NoFriend noFriend = noFriendDao.findByUseridAndFriendid(userId, friendId);
+        if (noFriend != null) {
+            noFriendDao.delete(noFriend);
+        }
+
+        userClient.updateFanscountAndFollowcount(userId, friendId, 1);
+
         return 1;
     }
 
@@ -72,6 +84,35 @@ public class FriendService {
 
         noFriendDao.save(noFriend);
 
+        //判断以前是否喜欢过该好友，若有则删除这条记录
+        Friend friend = friendDao.findByUseridAndFriendid(userId, friendId);
+        if (friend != null) {
+            friendDao.delete(friend);
+
+            friendDao.updateIsLike("0", friendId, userId);
+
+            userClient.updateFanscountAndFollowcount(userId, friendId, -1);
+        }
+
         return 1;
+    }
+
+    public void deleteFriend(String userId, String friendId) {
+
+        //删除表中从userId到friendId的记录
+        friendDao.deleteFriend(userId, friendId);
+
+        //判断是否为双向喜欢，若有则修改0
+        friendDao.updateIsLike("0", friendId, userId);
+
+        NoFriend noFriend = new NoFriend();
+        noFriend.setUserid(userId);
+        noFriend.setFriendid(friendId);
+
+        noFriendDao.save(noFriend);
+
+        userClient.updateFanscountAndFollowcount(userId, friendId, -1);
+
+
     }
 }

@@ -29,6 +29,29 @@ public class FriendController {
     private FriendService friendService;
 
     /**
+     * 删除好友
+     *
+     * @param friendId 好友id
+     * @return
+     */
+    @DeleteMapping(value = "/{friendId}")
+    public Result deleteFriend(@PathVariable("friendId") String friendId) {
+
+        //验证是否登录，并且拿到当前用户的id
+        Claims claims = (Claims) request.getAttribute("claims_user");
+        if (claims == null) {
+            return new Result(false, StatusCode.ERROR, "请登录");
+        }
+
+        //用户id
+        String userId = claims.getId();
+
+        friendService.deleteFriend(userId, friendId);
+
+        return new Result(true, StatusCode.OK, "删除成功");
+    }
+
+    /**
      * 添加好友或者添加非好友
      *
      * @param friendId 好友id
