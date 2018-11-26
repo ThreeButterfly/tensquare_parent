@@ -1,4 +1,4 @@
-package com.xuan.user.interceptor;
+package com.xuan.friend.interceptor;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Component;
@@ -43,12 +43,8 @@ public class JwtInterceptor implements HandlerInterceptor {
                     String role = (String) claims.get("roles");
 
                     if (role != null) {
-                        if (("admin").equals(role)) {
-                            request.setAttribute("claims_admin", token);
-                        }
-
                         if (("user").equals(role)) {
-                            request.setAttribute("claims_user", token);
+                            request.setAttribute("claims_user", claims);
                         }
                     }
                 } catch (Exception e) {
