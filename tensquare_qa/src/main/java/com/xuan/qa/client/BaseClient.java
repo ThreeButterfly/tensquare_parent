@@ -1,5 +1,6 @@
 package com.xuan.qa.client;
 
+import com.xuan.qa.client.impl.BaseClientImpl;
 import entity.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @Date: 2018/11/24 0024
  * @Time: 11:46
  */
-@FeignClient("tensquare-base")
+@FeignClient(value = "tensquare-base", fallback = BaseClientImpl.class)
 public interface BaseClient {
 
     @GetMapping("/label/{labelId}")
