@@ -22,6 +22,6 @@ public class CustomerOne {
 
     @RabbitHandler
     public void getMsg(String msg) {
-        System.out.println("直接模式下消费：" + msg);
+        System.out.println("直接模式下消费： " + msg);
     }
 }
