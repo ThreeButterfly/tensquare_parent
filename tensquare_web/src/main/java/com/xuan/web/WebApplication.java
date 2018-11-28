@@ -18,10 +18,7 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 @EnableEurekaClient
 public class WebApplication {
 
-    /**
-     * 我阿康很强
-     *
-     * */
+
     public static void main(String[] args) {
         SpringApplication.run(WebApplication.class);
     }
