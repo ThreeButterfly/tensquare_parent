@@ -117,8 +117,8 @@ public class ManagerFilter extends ZuulFilter {
         requestContext.setSendZuulResponse(false);
         //http状态码
         requestContext.setResponseStatusCode(403);
-        requestContext.setResponseBody("无权访问");
-        requestContext.getResponse().setContentType("text/html;charset=utf‐8");
+        requestContext.setResponseBody("{message:无权访问}");
+        requestContext.getResponse().setContentType("application/json;charset=UTF-8");
         return null;
     }
 }
