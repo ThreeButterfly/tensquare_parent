@@ -1,8 +1,14 @@
 package com.xuan.manager.filter;
 
 import com.netflix.zuul.ZuulFilter;
+import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
+import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Component;
+import util.JwtUtil;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>Description: 描述 </p>
@@ -14,8 +20,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ManagerFilter extends ZuulFilter {
+
+    @Resource
+    private JwtUtil jwtUtil;
+
     /**
      * 在请求前pre或者请求后post执行
+     *
      * @return
      */
     @Override
@@ -25,6 +36,7 @@ public class ManagerFilter extends ZuulFilter {
 
     /**
      * 多个过滤器的执行顺序，数字越小，越先执行
+     *
      * @return
      */
     @Override
@@ -34,6 +46,7 @@ public class ManagerFilter extends ZuulFilter {
 
     /**
      * 当前过滤是否开启，true-开启 false-关闭
+     *
      * @return
      */
     @Override
@@ -44,12 +57,68 @@ public class ManagerFilter extends ZuulFilter {
     /**
      * 过滤器内执行的操作
      * setsendzullRespponse(false) 表示不继续执行
+     *
      * @return 表示任何object的值都继续执行
      * @throws ZuulException
      */
     @Override
     public Object run() throws ZuulException {
         System.out.println("经过后台过滤器了！");
+
+        //得到request的上下文
+        RequestContext requestContext =
+                RequestContext.getCurrentContext();
+
+        // 得到request域
+        HttpServletRequest request = requestContext.getRequest();
+
+        final String options = "OPTIONS";
+        if (options.equals(request.getMethod())) {
+            return null;
+        }
+
+        String url = request.getRequestURL().toString();
+        String urlFlag = "/admin/login";
+        if (url.indexOf(urlFlag) > 0) {
+            System.out.println("登陆页面" + url);
+            return null;
+        }
+
+        // 得到头部信息
+        String header = request.getHeader("Authorization");
+
+        if (header != null && !"".equals(header) && header.startsWith("Bearer ")) {
+            //提取token
+            final String token = header.substring(7);
+
+            //解析token
+            try {
+                Claims claims = jwtUtil.parseJWT(token);
+
+                //获取角色
+                String role = (String) claims.get("roles");
+
+                if (role != null) {
+                    if ("admin".equals(role)) {
+                        // 若有值，继续向下传递
+                        requestContext.addZuulRequestHeader("Authorization", header);
+                        return null;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+
+                //终止运行
+                requestContext.setSendZuulResponse(false);
+            }
+        }
+
+        //终止运行
+        requestContext.setSendZuulResponse(false);
+        //http状态码
+        requestContext.setResponseStatusCode(403);
+        requestContext.setResponseBody("无权访问");
+        requestContext.getResponse().setContentType("text/html;charset=utf‐8");
         return null;
     }
 }

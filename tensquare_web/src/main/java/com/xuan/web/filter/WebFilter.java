@@ -32,6 +32,7 @@ public class WebFilter extends ZuulFilter {
 
     @Override
     public Object run() throws ZuulException {
+        System.out.println("经过前台过滤器");
 
         //得到request的上下文
         RequestContext requestContext =

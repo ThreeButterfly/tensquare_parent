@@ -9,6 +9,10 @@ eureka:
       defaultZone: http://127.0.0.1:6868/eureka/
   instance:
     prefer-ip-address: true
+jwt:
+  config:
+    key: itcast
+    ttl: 3600000
 zuul:
   routes:
     tensquare-base:
@@ -35,3 +39,4 @@ zuul:
     tensquare-user:
       path: /user/**
       serviceId: tensquare-user
+
