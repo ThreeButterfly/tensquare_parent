@@ -4,7 +4,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import java.util.Date;
 
@@ -13,15 +15,18 @@ import java.util.Date;
  * @author Administrator
  */
 @ConfigurationProperties("jwt.config")
+@RefreshScope
 public class JwtUtil {
     /**
      * 盐
      */
+    @Value("${key}")
     private String key;
 
     /**
      * 过期时间：一个小时
      */
+    @Value("${ttl}")
     private long ttl;
 
     public String getKey() {
