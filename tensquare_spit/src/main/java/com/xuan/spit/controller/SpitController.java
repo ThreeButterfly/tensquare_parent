@@ -6,6 +6,7 @@ import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @CrossOrigin
+@RefreshScope
 @RequestMapping("/spit")
 public class SpitController {
 

@@ -1,18 +1,17 @@
 package com.xuan.recruit.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
-
 import com.xuan.recruit.pojo.Enterprise;
 import com.xuan.recruit.service.EnterpriseService;
-
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 控制器层
@@ -21,6 +20,7 @@ import entity.StatusCode;
  */
 @RestController
 @CrossOrigin
+@RefreshScope
 @RequestMapping("/enterprise")
 public class EnterpriseController {
 

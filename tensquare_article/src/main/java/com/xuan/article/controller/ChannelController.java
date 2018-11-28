@@ -1,22 +1,15 @@
 package com.xuan.article.controller;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.xuan.article.pojo.Channel;
 import com.xuan.article.service.ChannelService;
-
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 /**
  * 控制器层
  * @author Administrator
@@ -25,12 +18,13 @@ import entity.StatusCode;
 @RestController
 @CrossOrigin
 @RequestMapping("/channel")
+@RefreshScope
 public class ChannelController {
 
 	@Autowired
 	private ChannelService channelService;
-	
-	
+
+
 	/**
 	 * 查询全部数据
 	 * @return
@@ -39,7 +33,7 @@ public class ChannelController {
 	public Result findAll(){
 		return new Result(true,StatusCode.OK,"查询成功",channelService.findAll());
 	}
-	
+
 	/**
 	 * 根据ID查询
 	 * @param id ID
@@ -73,7 +67,7 @@ public class ChannelController {
     public Result findSearch( @RequestBody Map searchMap){
         return new Result(true,StatusCode.OK,"查询成功",channelService.findSearch(searchMap));
     }
-	
+
 	/**
 	 * 增加
 	 * @param channel
@@ -83,7 +77,7 @@ public class ChannelController {
 		channelService.add(channel);
 		return new Result(true,StatusCode.OK,"增加成功");
 	}
-	
+
 	/**
 	 * 修改
 	 * @param channel
@@ -91,10 +85,10 @@ public class ChannelController {
 	@RequestMapping(value="/{id}",method= RequestMethod.PUT)
 	public Result update(@RequestBody Channel channel, @PathVariable String id ){
 		channel.setId(id);
-		channelService.update(channel);		
+		channelService.update(channel);
 		return new Result(true,StatusCode.OK,"修改成功");
 	}
-	
+
 	/**
 	 * 删除
 	 * @param id
@@ -104,5 +98,5 @@ public class ChannelController {
 		channelService.deleteById(id);
 		return new Result(true,StatusCode.OK,"删除成功");
 	}
-	
+
 }

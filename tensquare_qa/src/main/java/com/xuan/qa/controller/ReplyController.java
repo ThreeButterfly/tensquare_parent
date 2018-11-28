@@ -1,22 +1,16 @@
 package com.xuan.qa.controller;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.xuan.qa.pojo.Reply;
 import com.xuan.qa.service.ReplyService;
-
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 /**
  * 控制器层
  * @author Administrator
@@ -25,12 +19,13 @@ import entity.StatusCode;
 @RestController
 @CrossOrigin
 @RequestMapping("/reply")
+@RefreshScope
 public class ReplyController {
 
 	@Autowired
 	private ReplyService replyService;
-	
-	
+
+
 	/**
 	 * 查询全部数据
 	 * @return
@@ -39,7 +34,7 @@ public class ReplyController {
 	public Result findAll(){
 		return new Result(true,StatusCode.OK,"查询成功",replyService.findAll());
 	}
-	
+
 	/**
 	 * 根据ID查询
 	 * @param id ID
@@ -73,7 +68,7 @@ public class ReplyController {
     public Result findSearch( @RequestBody Map searchMap){
         return new Result(true,StatusCode.OK,"查询成功",replyService.findSearch(searchMap));
     }
-	
+
 	/**
 	 * 增加
 	 * @param reply
@@ -83,7 +78,7 @@ public class ReplyController {
 		replyService.add(reply);
 		return new Result(true,StatusCode.OK,"增加成功");
 	}
-	
+
 	/**
 	 * 修改
 	 * @param reply
@@ -91,10 +86,10 @@ public class ReplyController {
 	@RequestMapping(value="/{id}",method= RequestMethod.PUT)
 	public Result update(@RequestBody Reply reply, @PathVariable String id ){
 		reply.setId(id);
-		replyService.update(reply);		
+		replyService.update(reply);
 		return new Result(true,StatusCode.OK,"修改成功");
 	}
-	
+
 	/**
 	 * 删除
 	 * @param id
@@ -104,5 +99,5 @@ public class ReplyController {
 		replyService.deleteById(id);
 		return new Result(true,StatusCode.OK,"删除成功");
 	}
-	
+
 }

@@ -1,22 +1,16 @@
 package com.xuan.gathering.controller;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.xuan.gathering.pojo.Gathering;
 import com.xuan.gathering.service.GatheringService;
-
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 /**
  * 控制器层
  * @author Administrator
@@ -25,12 +19,13 @@ import entity.StatusCode;
 @RestController
 @CrossOrigin
 @RequestMapping("/gathering")
+@RefreshScope
 public class GatheringController {
 
 	@Autowired
 	private GatheringService gatheringService;
-	
-	
+
+
 	/**
 	 * 查询全部数据
 	 * @return
@@ -39,7 +34,7 @@ public class GatheringController {
 	public Result findAll(){
 		return new Result(true,StatusCode.OK,"查询成功",gatheringService.findAll());
 	}
-	
+
 	/**
 	 * 根据ID查询
 	 * @param id ID
@@ -73,7 +68,7 @@ public class GatheringController {
     public Result findSearch( @RequestBody Map searchMap){
         return new Result(true,StatusCode.OK,"查询成功",gatheringService.findSearch(searchMap));
     }
-	
+
 	/**
 	 * 增加
 	 * @param gathering
@@ -83,7 +78,7 @@ public class GatheringController {
 		gatheringService.add(gathering);
 		return new Result(true,StatusCode.OK,"增加成功");
 	}
-	
+
 	/**
 	 * 修改
 	 * @param gathering
@@ -91,10 +86,10 @@ public class GatheringController {
 	@RequestMapping(value="/{id}",method= RequestMethod.PUT)
 	public Result update(@RequestBody Gathering gathering, @PathVariable String id ){
 		gathering.setId(id);
-		gatheringService.update(gathering);		
+		gatheringService.update(gathering);
 		return new Result(true,StatusCode.OK,"修改成功");
 	}
-	
+
 	/**
 	 * 删除
 	 * @param id
@@ -104,5 +99,5 @@ public class GatheringController {
 		gatheringService.deleteById(id);
 		return new Result(true,StatusCode.OK,"删除成功");
 	}
-	
+
 }

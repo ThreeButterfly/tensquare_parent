@@ -5,11 +5,11 @@ import com.xuan.search.service.ArticleService;
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * <p>Description: 描述 </p>
@@ -21,6 +21,7 @@ import java.util.List;
  */
 @RestController
 @CrossOrigin
+@RefreshScope
 @RequestMapping("/article")
 public class ArticleController {
 
