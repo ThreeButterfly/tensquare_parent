@@ -4,6 +4,8 @@ import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import io.jsonwebtoken.Claims;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import util.JwtUtil;
 
@@ -77,6 +79,7 @@ public class ManagerFilter extends ZuulFilter {
             return null;
         }
 
+        //判断请求为登录页面，直接放行
         String url = request.getRequestURL().toString();
         String urlFlag = "/admin/login";
         if (url.indexOf(urlFlag) > 0) {
@@ -87,12 +90,15 @@ public class ManagerFilter extends ZuulFilter {
         // 得到头部信息
         String header = request.getHeader("Authorization");
 
-        if (header != null && !"".equals(header) && header.startsWith("Bearer ")) {
-            //提取token
+        final String Bearer="Bearer ";
+
+        //判断请求头是否存在
+        if (!StringUtils.isBlank(header) && header.startsWith(Bearer)) {
+            // 如果请求头存在，并且是以 (Bearer )开头，提取token
             final String token = header.substring(7);
 
-            //解析token
             try {
+                //解析token
                 Claims claims = jwtUtil.parseJWT(token);
 
                 //获取角色
@@ -116,7 +122,7 @@ public class ManagerFilter extends ZuulFilter {
         //终止运行
         requestContext.setSendZuulResponse(false);
         //http状态码
-        requestContext.setResponseStatusCode(403);
+        requestContext.setResponseStatusCode(HttpStatus.FORBIDDEN.value());
         requestContext.setResponseBody("{message:无权访问}");
         requestContext.getResponse().setContentType("application/json;charset=UTF-8");
         return null;
